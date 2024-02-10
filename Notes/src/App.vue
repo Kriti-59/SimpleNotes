@@ -1,24 +1,48 @@
+<script setup>
+import { ref } from "vue";
+
+const showModal = ref(false);
+const newNote = ref("");
+const notes = ref([]);
+
+function getRandomColor() {
+  return "hsl(" + Math.random() * 360 + ", 100%, 75%)";
+}
+
+const addNote = () => {
+  notes.value.push({
+    id: Math.floor(Math.random() * 10000000),
+    text: newNote.value,
+    date: new Date(),
+    backgroundColor: getRandomColor()
+  });
+  showModal.value = false;
+  newNote.value = "";
+};
+</script>
+
 <template>
 
 <main> 
-  
+  <div v-if= "showModal" class="overlay">
+    <div class="modal"> 
+      <textarea v-model= "newNote" name="note" id="note" cols="30" rows="10"></textarea>
+      <button @click="addNote">Add Note</button>
+      <button class="close" @click = "showModal = false">Close</button>
+    </div>
+  </div>
   <div class ="container"> 
     <header>
       <h1> Notes </h1>
-      <button>+</button>
+      <button @click = "showModal = true">+</button>
     </header>
 
     <div class="card-container">
-      <div class="card">
-        <p class = "main-text"> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam dolorum officia corporis aspernatur. Libero sed ut quidem voluptatem ex id cupiditate doloremque! Atque voluptates fuga necessitatibus nobis saepe modi iste!</p>
-        <p class="date"> 02/05/2024</p>
-      </div>
-
-      <div class="card">
-        <p class = "main-text"> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quisquam dolorum officia corporis aspernatur. Libero sed ut quidem voluptatem ex id cupiditate doloremque! Atque voluptates fuga necessitatibus nobis saepe modi iste!</p>
-        <p class="date"> 02/05/2024</p>
-    
-      </div>
+      <div v-for="note in notes" :key = "note.id" 
+      class="card" :style="{ backgroundColor: note.backgroundColor }">
+        <p class="main-text">{{ note.text }}</p>
+        <p class="date"> {{ note.date.toLocaleDateString("en-US") }}</p>
+    </div>
 
     </div>
 
@@ -57,7 +81,7 @@ h1{
 }
 
 
-button {
+header button {
   display: inline-block;
   padding: 10px 20px;
   border: 2px solid #ccc;
@@ -93,5 +117,41 @@ button {
   flex-wrap: wrap;
 }
 
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(0,0,0,0.77);
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.modal{
+  width: 750px;
+  background-color: white;
+  border-radius: 10px;
+  padding: 30px;
+  position: relative;
+  display: flex;
+  flex-direction:column;
+
+}
+
+.modal button{
+  padding: 10px 20px;
+  font-size: 20px;
+  width: 100%;
+  background-color: chocolate;
+  border: none;
+  margin-top: 15px;
+}
+
+.modal.close{
+  background-color: rgba(153, 9, 9, 0.584);
+  margin-top: 7px;
+}
 
 </style>
