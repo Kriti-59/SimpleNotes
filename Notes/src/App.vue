@@ -3,6 +3,7 @@ import { ref } from "vue";
 
 const showModal = ref(false);
 const newNote = ref("");
+const errorMessage = ref("")
 const notes = ref([]);
 
 function getRandomColor() {
@@ -10,6 +11,10 @@ function getRandomColor() {
 }
 
 const addNote = () => {
+  if (newNote.value.length < 10) {
+    return  errorMessage.value = "Please enter at least 10 characters"
+  }
+  
   notes.value.push({
     id: Math.floor(Math.random() * 10000000),
     text: newNote.value,
@@ -18,15 +23,16 @@ const addNote = () => {
   });
   showModal.value = false;
   newNote.value = "";
+  errorMessage.value = "";
 };
 </script>
-
 <template>
 
 <main> 
   <div v-if= "showModal" class="overlay">
     <div class="modal"> 
-      <textarea v-model= "newNote" name="note" id="note" cols="30" rows="10"></textarea>
+      <textarea v-model.trim= "newNote" name="note" id="note" cols="30" rows="10"></textarea>
+      <p v-if="errorMessage">{{ errorMessage }}</p>
       <button @click="addNote">Add Note</button>
       <button class="close" @click = "showModal = false">Close</button>
     </div>
@@ -43,17 +49,11 @@ const addNote = () => {
         <p class="main-text">{{ note.text }}</p>
         <p class="date"> {{ note.date.toLocaleDateString("en-US") }}</p>
     </div>
-
     </div>
-
   </div>
 
 </main>
-
-
-
 </template>
-
 
 <style scoped >
 
@@ -61,7 +61,6 @@ main{
   height: 100vh;
   width: 100vw;
 }
-
 .container{
   max-width: 1000px;
   padding: 10px;
@@ -80,7 +79,6 @@ h1{
   font-size: 30px;
 }
 
-
 header button {
   display: inline-block;
   padding: 10px 20px;
@@ -94,6 +92,7 @@ header button {
   cursor: pointer;
   transition: background-color 0.3s, border-color 0.3s, color 0.3s;
 }
+
 .card {
   width: 225px;
   height: 225px;
@@ -126,7 +125,6 @@ header button {
   display: flex;
   align-items: center;
   justify-content: center;
-
 }
 
 .modal{
@@ -137,21 +135,24 @@ header button {
   position: relative;
   display: flex;
   flex-direction:column;
-
 }
 
 .modal button{
   padding: 10px 20px;
   font-size: 20px;
   width: 100%;
-  background-color: chocolate;
+  background-color: blueviolet;
   border: none;
   margin-top: 15px;
 }
 
-.modal.close{
-  background-color: rgba(153, 9, 9, 0.584);
+.modal .close {
+  background-color: rgb(177, 18, 18);
   margin-top: 7px;
+}
+
+.modal p{
+  color: rgb(188, 3, 3);
 }
 
 </style>
