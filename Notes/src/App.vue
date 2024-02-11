@@ -25,6 +25,12 @@ const addNote = () => {
   newNote.value = "";
   errorMessage.value = "";
 };
+
+const deleteNote = (id) => {
+  if (confirm("Are you sure you want to delete this note?")) {
+    notes.value = notes.value.filter((note) => note.id !== id);
+  }
+};
 </script>
 <template>
 
@@ -48,6 +54,7 @@ const addNote = () => {
       class="card" :style="{ backgroundColor: note.backgroundColor }">
         <p class="main-text">{{ note.text }}</p>
         <p class="date"> {{ note.date.toLocaleDateString("en-US") }}</p>
+        <button @click="deleteNote(note.id)" class="delete-button">Delete</button>
     </div>
     </div>
   </div>
@@ -153,6 +160,15 @@ header button {
 
 .modal p{
   color: rgb(188, 3, 3);
+}
+
+.delete-button {
+  padding: 5px 5px;
+  background-color: red;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
 
 </style>
